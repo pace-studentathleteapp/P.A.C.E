@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>P.A.C.E. install check</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#2B4A3B"><link rel="icon" href="favicon.png">
+<style>body{font:16px/1.5 system-ui,sans-serif;background:#F8F5EE;color:#1F4033;margin:0 auto;padding:20px;max-width:560px}h1{font-size:26px;margin:8px 0}.c{background:#fff;border-radius:16px;padding:6px 16px;margin:14px 0}.r{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #eee}.r:last-child{border:0}.i{width:24px;flex:none}small{color:#6F8499;display:block}button,a.b{display:block;width:100%;box-sizing:border-box;text-align:center;background:#2B4A3B;color:#fff;border:0;border-radius:14px;padding:14px;font:700 17px system-ui;text-decoration:none;margin:10px 0}button[disabled]{opacity:.4}a.g{background:#D9E3EE;color:#1F4033}ol{padding-left:20px}</style></head><body>
+<h1>🦝 P.A.C.E. install check</h1><p>This page tests why your phone may not offer “Install app”, and lets you install if it can.</p>
+<div class="c" id="list"></div><button id="ins" disabled>Install app</button><a class="b g" href="index.html">Open the app</a><div class="c" id="help" hidden></div>
+<script>
+const L=document.getElementById('list'),H=document.getElementById('help'),B=document.getElementById('ins');let DP=null,bad=0,done=false;
+const row=(ok,t,s)=>{if(ok===false)bad++;L.insertAdjacentHTML('beforeend','<div class="r"><span class="i">'+(ok===true?'✅':ok===false?'❌':'ℹ️')+'</span><div>'+t+'<small>'+(s||'')+'</small></div></div>')};
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();DP=e;B.disabled=false;fin()});
+addEventListener('appinstalled',()=>{B.textContent='Installed ✔';B.disabled=true});
+B.onclick=()=>{if(DP)DP.prompt()};
+function fin(){if(done&&!DP)return;done=true;H.hidden=false;const sa=matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
+if(sa){H.innerHTML='<p>✅ You are already running the installed app.</p>';return}
+if(DP){H.innerHTML='<p>✅ Your browser is ready. Tap <b>Install app</b> above.</p>';return}
+H.innerHTML=(bad?'<p><b>Fix the red items first</b> (upload any missing files to GitHub, then reload this page).</p>':'<p>Everything on the website looks fine, but the browser is not offering the install pop-up right now. Install from the browser menu instead:</p>')+
+'<ol><li><b>Chrome:</b> tap ⋮ (top right), then “Install app” or “Add to Home screen”.</li><li><b>Samsung Internet:</b> tap ☰, then “Add page to”, then “Home screen”.</li><li>Make sure you opened the link in the browser itself, not inside WhatsApp, Instagram or another app, and not in a private/incognito tab.</li><li>If you removed the app before: open the browser settings, clear this site’s data (Chrome: Settings, Site settings, All sites, this site, Clear &amp; reset), close the tab, open the link again, wait 10 seconds and retry.</li><li>Delete the old app icon first if it is still on your home screen.</li></ol>'}
+async function run(){const ua=navigator.userAgent,sam=/SamsungBrowser/.test(ua),chr=/Chrome\//.test(ua)&&!sam&&!/EdgA|OPR|Firefox/.test(ua),inapp=/FBAN|FBAV|Instagram|Line\/|WhatsApp|Snapchat|TikTok|; wv\)/.test(ua),https=location.protocol==='https:'||location.hostname==='localhost';
+row(https,'Secure connection (https)',https?location.origin:'Open the https:// link of your site.');
+row(inapp?false:null,'Browser: '+(sam?'Samsung Internet':chr?'Chrome':'other')+(inapp?' (inside another app)':''),inapp?'Open the link in Chrome or Samsung Internet directly.':'');
+let m=null,mu='';try{const l=document.querySelector('link[rel=manifest]');mu=l.href;const r=await fetch(mu,{cache:'no-store'});row(r.ok,'Manifest file found',mu);m=await r.json()}catch(e){row(false,'Manifest file could not be read','Check that manifest.json is uploaded next to index.html.')}
+if(m){row(!!(m.name&&m.start_url),'Manifest has a name and start page');for(const n of [192,512]){const i=(m.icons||[]).find(x=>(x.sizes||'').includes(n+'x'+n));let ok=false;if(i){try{ok=(await fetch(new URL(i.src,mu))).ok}catch(e){}}row(ok,n+'×'+n+' icon',ok?'':'Upload icon-'+n+'.png')}}
+try{await navigator.serviceWorker.register('sw.js');const reg=await navigator.serviceWorker.ready;row(!!reg.active,'Service worker active','Offline mode works.')}catch(e){row(false,'Service worker failed',String(e.message||e))}
+const ix=await fetch('index.html',{cache:'no-store'}).then(r=>r.text()).catch(()=>'');row(/rel="manifest"/.test(ix),'index.html is linked to the manifest',/rel="manifest"/.test(ix)?'':'Upload the newest index.html from the zip.');
+setTimeout(fin,4000)}
+run();
+</script></body></html>

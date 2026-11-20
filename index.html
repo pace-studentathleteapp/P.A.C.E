@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>P.A.C.E. – plan. achieve. challenge. evolve.</title>
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2B4A3B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -307,7 +307,7 @@ function openGoals(){$('#m').innerHTML=`<div class=modal onclick="if(event.targe
 let DP=null;const inApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();DP=e;if(V.tab==='home'||V.tab==='profile')draw()});addEventListener('appinstalled',()=>{DP=null;draw()});
 function install(){if(DP){DP.prompt();DP.userChoice.finally(()=>{DP=null;draw()})}else openInst()}
-function openInst(){$('#m').innerHTML=`<div class=modal onclick="if(event.target===this)closeM()"><div class=sheet><h3>${t('ins')}</h3><p style="margin:0">${t('insx')}</p><button class=btn onclick="closeM()">${t('close')}</button></div></div>`}
+function openInst(){$('#m').innerHTML=`<div class=modal onclick="if(event.target===this)closeM()"><div class=sheet><h3>${t('ins')}</h3><p style="margin:0">${t('insx')}</p><a class="btn" style="text-align:center;text-decoration:none" href="install.html">🔧 Install check</a><button class=btn onclick="closeM()">${t('close')}</button></div></div>`}
 // ---------- school timetable as a list ----------
 Object.assign(T.en,{per:'Period',addper:'+ Add period',editper:'Edit period',clr:'Clear',wkend:'Weekend',tthint:'Tap a box to fill in a lesson. Tap a time to change that period. Your lessons repeat every week in your School calendar.'});
 Object.assign(T.de,{per:'Zeitfenster',addper:'+ Zeitfenster hinzufügen',editper:'Zeitfenster bearbeiten',clr:'Leeren',wkend:'Wochenende',tthint:'Tippe auf ein Feld, um eine Lektion einzutragen. Tippe auf eine Zeit, um das Zeitfenster zu ändern. Deine Lektionen wiederholen sich jede Woche in deinem Schulkalender.'});
